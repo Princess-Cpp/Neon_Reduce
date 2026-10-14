@@ -1,6 +1,7 @@
 #include "neon_reduce.h"
 #define M(q,inv,mu) { (q), (inv), (mu) }
-/* qinv values are -q^-1 mod 2^32; mu=floor(2^64/q). */
+/* qinv values are -q^-1 mod 2^32; mu=floor(2^64/q).
+ * Keep this table in flash/rodata on embedded targets. */
 const struct neon_modulus neon_moduli[] = {
  M(3329u,       2480617617u, 5548994068745ull),
  M(3457u,       2709555055u, 5339373154231ull),
