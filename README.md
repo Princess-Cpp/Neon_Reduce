@@ -4,8 +4,10 @@
 
 代码演示所列模数的 Barrett/Montgomery reduction 接口，以及对应的 AArch64 汇编实现。
 
-`neon_barrett_u32` accepts `x < q²` and `mu=floor(2^64/q)`.  
-`neon_montgomery_u32` accepts `t < q·2^32` and `qinv=-q⁻¹ (mod 2^32)`.
+`barrett_u32_64mu` accepts `x < q²` and `mu=floor(2^64/q)`.
+`montgomery_u32` accepts `t < q·2^32`, odd `q < 2^31`, and `qinv=-q⁻¹ (mod 2^32)`.
+
+这两个入口使用 AArch64 通用寄存器中的标量整数指令，不是 NEON 向量实现；函数名因此不再使用 `neon_` 前缀。
 
 使用 AArch64 工具链编译：`-Iinclude src/neon_reduce.S src/neon_moduli.c`。
 当前 x86_64 环境不能执行这些指令，因此这里只进行源码和接口层面的整理；后续应在 AArch64/NEON 设备上验证。
