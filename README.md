@@ -9,6 +9,10 @@
 
 这两个入口使用 AArch64 通用寄存器中的标量整数指令，不是 NEON 向量实现；函数名因此不再使用 `neon_` 前缀。
 
+## NEON 四通道接口
+
+`neon_barrett_u32x4` 和 `neon_montgomery_u32x4` 使用 `v0`–`v6` 处理四个 `uint32_t` 通道。当前向量版本面向 `q = 769/2017/3329/3457`；其 Barrett 输入须满足每个 `x < q²`，Montgomery 输入为四个 `uint64_t` 且满足 `t < q·2³²`。`mu` 使用 `floor(2³²/q)`。16776961 和 67104769 尚未纳入此向量接口。
+
 使用 AArch64 工具链编译：`-Iinclude src/neon_reduce.S src/neon_moduli.c`。
 当前 x86_64 环境不能执行这些指令，因此这里只进行源码和接口层面的整理；后续应在 AArch64/NEON 设备上验证。
 
