@@ -9,3 +9,15 @@
 
 使用 AArch64 工具链编译：`-Iinclude src/neon_reduce.S src/neon_moduli.c`。
 当前 x86_64 环境不能执行这些指令，因此这里只进行源码和接口层面的整理；后续应在 AArch64/NEON 设备上验证。
+
+## 算法与模数
+
+本作业覆盖以下算法参数：
+
+| 算法 | 模数 |
+| --- | ---: |
+| BW-KEM / AFS-KEX | `q = 3329` |
+| DTRU（三项分圆环） | `q = 3457` |
+| DTRU（二次幂） | `q = 769` |
+| DTRU（prime） | `q = 2017`，`q' = 16776961` |
+| OPS Digital Signature Algorithm | `q = 67104769` |
