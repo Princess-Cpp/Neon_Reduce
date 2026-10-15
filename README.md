@@ -30,3 +30,5 @@ Montgomery 的输入是四个 `uint64_t`。由于一个 NEON `v.2d` 只有两个
 ## 大模数路径
 
 `q' = 16776961` 和 `q = 67104769` 使用 `src/large_mod_reduce.S` 中的 AArch64 64 位标量 Barrett/Montgomery 入口。NEON 没有单条 64×64→128 乘法指令，因此这两个模数不使用当前四通道 32 位 Barrett 路径；四个小模数仍使用 `src/neon_vector_reduce.S`。
+
+另有 `src/neon_barrett_u64x2_experimental.S`：它用两个 32 位部分积展示两路 64 位乘法的 NEON 拆分方式。该文件明确是 **EXPERIMENTAL**，当前只展示部分积和高位近似，未完成进位闭合，也未在 AArch64 真机验证，不能替代 `large_mod_reduce.S` 的标量参考实现。
