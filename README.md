@@ -8,7 +8,7 @@
 
 `neon_barrett_u32x4` 和 `neon_montgomery_u32x4` 的对外接口都是四通道：一次处理四个 `uint32_t` 输入，使用 `v.4s` 表示 `{x0,x1,x2,x3}`。
 
-Montgomery 的输入是四个 `uint64_t`。由于一个 NEON `v.2d` 只有两个 64 位通道，汇编内部会把这四个 64 位值分成两组 `v.2d` 处理，再合并为四个输出；这里的“二通道”指 64 位中间量的内部布局，不是另一个二通道 API。
+Montgomery 的对外输入仍是四个 `uint64_t`。由于一个 NEON `v.2d` 寄存器只能容纳两个 64 位通道，汇编会把输入分成两组 `v.2d` 依次处理，再合并为四个输出。因此，“二通道”只描述 64 位中间量在寄存器中的分组方式，不表示仓库提供了另一个二通道 API。
 
 当前向量版本面向 `q = 769/2017/3329/3457`；其 Barrett 输入须满足每个 `x < q²`，Montgomery 输入满足 `t < q·2³²`。`mu` 使用 `floor(2³²/q)`。16776961 和 67104769 尚未纳入此向量接口。
 
@@ -29,6 +29,17 @@ Montgomery 的输入是四个 `uint64_t`。由于一个 NEON `v.2d` 只有两个
 
 ## 大模数路径
 
-`q' = 16776961` 和 `q = 67104769` 使用 `src/large_mod_reduce.S` 中的 AArch64 64 位标量 Barrett/Montgomery 入口。NEON 没有单条 64×64→128 乘法指令，因此这两个模数不使用当前四通道 32 位 Barrett 路径；四个小模数仍使用 `src/neon_vector_reduce.S`。
+`q' = 16776961` 和 `q = 67104769` 的完整参考实现使用 `src/large_mod_reduce.S` 中的 AArch64 64 位标量 Barrett/Montgomery 入口。当前四通道 32 位 Barrett 路径要求 `x < q² < 2³²`，不适用于这两个大模数；同时，NEON 没有单条 64×64→128 乘法指令，所以大模数的 NEON 分片版本单独列为实验代码。四个小模数仍使用 `src/neon_vector_reduce.S`。
 
 另有 `src/neon_barrett_u64x2_experimental.S`：它用两个 32 位部分积展示两路 64 位乘法的 NEON 拆分方式。该文件明确是 **EXPERIMENTAL**，当前只展示部分积和高位近似，未完成进位闭合，也未在 AArch64 真机验证，不能替代 `large_mod_reduce.S` 的标量参考实现。
+
+## 文件说明
+
+| 文件 | 作用 | 状态 |
+| --- | --- | --- |
+| `src/neon_vector_reduce.S` | 四个 `uint32_t` 通道的小模数 NEON Barrett/Montgomery reduction | NEON 实现，未在当前 x86_64 环境运行 |
+| `include/neon_vector_reduce.h` | 四通道 NEON 函数声明 | 对应头文件 |
+| `src/large_mod_reduce.S` | 大模数的 64 位标量 Barrett/Montgomery 参考实现 | 完整参考路径 |
+| `include/large_mod_reduce.h` | 标量参考函数声明 | 对应头文件 |
+| `src/neon_barrett_u64x2_experimental.S` | 用 32 位部分积模拟 64 位乘法的 NEON 实验 | 未完成进位闭合，未验证 |
+| `include/neon_experimental.h` | NEON 实验函数声明 | 实验接口 |
