@@ -4,6 +4,8 @@
 
 代码演示所列模数的 Barrett/Montgomery reduction 接口，以及对应的 AArch64 NEON 汇编实现。
 
+这里实现的是不同商密算法共用的底层模约减组件，不是这些商密算法本身的完整实现。BW-KEM/AFS-KEX、DTRU 和 OPS Digital Signature Algorithm 仍然是不同的上层算法；它们可以调用相同的 Barrett 或 Montgomery reduction，但各自的多项式运算、采样、编码、密钥流程和签名流程并不相同。
+
 ## NEON 四通道接口
 
 `neon_barrett_u32x4` 和 `neon_montgomery_u32x4` 的对外接口都是四通道：一次处理四个 `uint32_t` 输入，使用 `v.4s` 表示 `{x0,x1,x2,x3}`。
