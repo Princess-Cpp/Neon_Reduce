@@ -26,3 +26,7 @@ Montgomery 的输入是四个 `uint64_t`。由于一个 NEON `v.2d` 只有两个
 | DTRU（二次幂） | `q = 769` |
 | DTRU（prime） | `q = 2017`，`q' = 16776961` |
 | OPS Digital Signature Algorithm | `q = 67104769` |
+
+## 大模数路径
+
+`q' = 16776961` 和 `q = 67104769` 使用 `src/large_mod_reduce.S` 中的 AArch64 64 位标量 Barrett/Montgomery 入口。NEON 没有单条 64×64→128 乘法指令，因此这两个模数不使用当前四通道 32 位 Barrett 路径；四个小模数仍使用 `src/neon_vector_reduce.S`。
