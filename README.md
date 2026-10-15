@@ -37,9 +37,9 @@ Montgomery 的对外输入仍是四个 `uint64_t`。由于一个 NEON `v.2d` 寄
 
 | 文件 | 作用 | 状态 |
 | --- | --- | --- |
-| `src/neon_vector_reduce.S` | 四个 `uint32_t` 通道的小模数 NEON Barrett/Montgomery reduction | NEON 实现，未在当前 x86_64 环境运行 |
 | `include/neon_vector_reduce.h` | 四通道 NEON 函数声明 | 对应头文件 |
-| `src/large_mod_reduce.S` | 大模数的 64 位标量 Barrett/Montgomery 参考实现 | 完整参考路径 |
 | `include/large_mod_reduce.h` | 标量参考函数声明 | 对应头文件 |
-| `src/neon_barrett_u64x2_experimental.S` | 用 32 位部分积模拟 64 位乘法的 NEON 实验 | 未完成进位闭合，未验证 |
 | `include/neon_experimental.h` | NEON 实验函数声明 | 实验接口 |
+| `src/neon_vector_reduce.S` | 四个 `uint32_t` 通道的小模数 NEON Barrett/Montgomery reduction | NEON 实现，未在当前 x86_64 环境运行 |
+| `src/large_mod_reduce.S` | 大模数的 64 位标量 Barrett/Montgomery 参考实现 | 完整参考路径 |
+| `src/neon_barrett_u64x2_experimental.S` | 用 32 位部分积模拟 64 位乘法的 NEON 实验 | 未完成进位闭合，未验证 |
